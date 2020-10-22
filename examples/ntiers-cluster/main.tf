@@ -38,7 +38,7 @@ module "network" {
   }
 
   providers = {
-    "openstack" = "openstack.${var.region}"
+    openstack = "openstack.${var.region}"
   }
 }
 
@@ -65,7 +65,7 @@ module "private_cluster" {
   ]
 
   providers = {
-    "openstack" = "openstack.${var.region}"
+    openstack = "openstack.${var.region}"
   }
 }
 
@@ -98,6 +98,6 @@ module "public_cluster" {
   ]
 
   providers = {
-    "openstack" = "openstack.${var.region}"
+    openstack = "openstack.${var.region}"
   }
 }

@@ -50,7 +50,7 @@ module "network_GRA3" {
   }
 
   providers = {
-    "openstack" = "openstack.GRA3"
+    openstack = "openstack.GRA3"
   }
 }
 
@@ -78,7 +78,7 @@ module "network_DE1" {
   }
 
   providers = {
-    "openstack" = "openstack.DE1"
+    openstack = "openstack.DE1"
   }
 }
 
@@ -109,7 +109,7 @@ module "private_cluster_GRA3" {
   ]
 
   providers = {
-    "openstack" = "openstack.GRA3"
+    openstack = "openstack.GRA3"
   }
 }
 
@@ -139,7 +139,7 @@ module "public_cluster_GRA3" {
   ]
 
   providers = {
-    "openstack" = "openstack.GRA3"
+    openstack = "openstack.GRA3"
   }
 }
 
@@ -167,6 +167,6 @@ module "private_cluster_DE1" {
   ]
 
   providers = {
-    "openstack" = "openstack.DE1"
+    openstack = "openstack.DE1"
   }
 }

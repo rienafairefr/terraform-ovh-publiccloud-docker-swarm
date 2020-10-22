@@ -34,7 +34,7 @@ module "network" {
   }
 
   providers = {
-    "openstack" = "openstack.${var.region}"
+    openstack = "openstack.${var.region}"
   }
 }
 
@@ -54,6 +54,6 @@ source ="../.."
   }
 
   providers = {
-    "openstack" = "openstack.${var.region}"
+    openstack = "openstack.${var.region}"
   }
 }
