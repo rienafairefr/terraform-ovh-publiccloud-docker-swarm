@@ -5,32 +5,32 @@ provider "ovh" {
 }
 
 provider "openstack" {
-  region = "${var.region}"
-  alias  = "${var.region}"
+  region = var.region
+  alias  = var.region
 }
 
 # Import Keypair
 resource "openstack_compute_keypair_v2" "keypair" {
   name       = "myswarm-keypair"
-  public_key = "${file("~/.ssh/id_rsa.pub")}"
+  public_key = file("~/.ssh/id_rsa.pub")
 }
 
 module "network" {
   source  = "ovh/publiccloud-network/ovh"
   version = ">= 0.0.10"
 
-  project_id      = "${var.project_id}"
+  project_id      = var.project_id
   attach_vrack    = false
   name            = "swarm-test-network"
   cidr            = "10.3.0.0/16"
-  region          = "${var.region}"
+  region          = var.region
   public_subnets  = ["10.3.0.0/24"]
   private_subnets = ["10.3.1.0/24"]
 
   enable_nat_gateway = true
   nat_as_bastion     = true
 
-  ssh_public_keys = ["${openstack_compute_keypair_v2.keypair.public_key}"]
+  ssh_public_keys = [openstack_compute_keypair_v2.keypair.public_key]
 
   metadata = {
     Terraform   = "true"
@@ -47,13 +47,13 @@ module "private_cluster" {
   # version     = ">= 0.0.1"
   source = "../.."
 
-  region          = "${var.region}"
+  region          = var.region
   name            = "myprivateswarm"
   count           = 3
   cidr            = "10.3.0.0/16"
-  network_id      = "${module.network.network_id}"
-  subnet_ids      = ["${module.network.private_subnets}"]
-  ssh_public_keys = ["${openstack_compute_keypair_v2.keypair.public_key}"]
+  network_id      = module.network.network_id
+  subnet_ids      = [module.network.private_subnets]
+  ssh_public_keys = [openstack_compute_keypair_v2.keypair.public_key]
 
   metadata = {
     Terraform   = "true"
@@ -74,18 +74,18 @@ module "public_cluster" {
   # version     = ">= 0.0.1"
   source = "../.."
 
-  region        = "${var.region}"
+  region        = var.region
   name          = "mypublicswarm"
   count         = 2
   cidr          = "10.3.0.0/16"
-  network_id    = "${module.network.network_id}"
-  subnet_ids    = ["${module.network.public_subnets}"]
+  network_id    = module.network.network_id
+  subnet_ids    = [module.network.public_subnets]
   public_facing = true
 
   manager_count      = 0
-  etcd_join_nodes    = "${module.private_cluster.etcd_join_nodes}"
-  security_group_ids = ["${module.private_cluster.security_group_id}"]
-  ssh_public_keys    = ["${openstack_compute_keypair_v2.keypair.public_key}"]
+  etcd_join_nodes    = module.private_cluster.etcd_join_nodes
+  security_group_ids = [module.private_cluster.security_group_id]
+  ssh_public_keys    = [openstack_compute_keypair_v2.keypair.public_key]
 
   metadata = {
     Terraform   = "true"

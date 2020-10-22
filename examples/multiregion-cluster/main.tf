@@ -20,7 +20,7 @@ provider "openstack" {
 
 # make use of the ovh api to set a vlan id (or segmentation id)
 resource "ovh_publiccloud_private_network" "net" {
-  project_id = "${var.project_id}"
+  project_id = var.project_id
   name       = "myswarmnetwork"
   regions    = ["GRA3", "DE1"]
   vlan_id    = "101"
@@ -30,10 +30,10 @@ module "network_GRA3" {
   source  = "ovh/publiccloud-network/ovh"
   version = ">= 0.0.10"
 
-  project_id         = "${var.project_id}"
+  project_id         = var.project_id
   create_network     = false
   attach_vrack       = false
-  network_name       = "${ovh_publiccloud_private_network.net.name}"
+  network_name       = ovh_publiccloud_private_network.net.name
   name               = "mynetwork"
   cidr               = "10.4.0.0/16"
   region             = "GRA3"
@@ -42,7 +42,7 @@ module "network_GRA3" {
   enable_nat_gateway = true
   single_nat_gateway = true
   nat_as_bastion     = true
-  ssh_public_keys    = ["${openstack_compute_keypair_v2.keypair.public_key}"]
+  ssh_public_keys    = [openstack_compute_keypair_v2.keypair.public_key]
 
   metadata = {
     Terraform   = "true"
@@ -58,10 +58,10 @@ module "network_DE1" {
   source  = "ovh/publiccloud-network/ovh"
   version = ">= 0.0.10"
 
-  project_id         = "${var.project_id}"
+  project_id         = var.project_id
   create_network     = false
   attach_vrack       = false
-  network_name       = "${ovh_publiccloud_private_network.net.name}"
+  network_name       = ovh_publiccloud_private_network.net.name
   name               = "mynetwork"
   cidr               = "10.4.0.0/16"
   region             = "DE1"
@@ -70,7 +70,7 @@ module "network_DE1" {
   nat_as_bastion     = true
   enable_nat_gateway = true
   single_nat_gateway = true
-  ssh_public_keys    = ["${openstack_compute_keypair_v2.keypair.public_key}"]
+  ssh_public_keys    = [openstack_compute_keypair_v2.keypair.public_key]
 
   metadata = {
     Terraform   = "true"
@@ -85,7 +85,7 @@ module "network_DE1" {
 # Import Keypair
 resource "openstack_compute_keypair_v2" "keypair" {
   name       = "myswarm-keypair"
-  public_key = "${file("~/.ssh/id_rsa.pub")}"
+  public_key = file("~/.ssh/id_rsa.pub")
 }
 
 module "private_cluster_GRA3" {
@@ -94,9 +94,9 @@ module "private_cluster_GRA3" {
   name            = "myprivateswarm_managers_gra3"
   count           = 3
   cidr            = "10.4.0.0/16"
-  network_id      = "${module.network_GRA3.network_id}"
-  subnet_ids      = ["${module.network_GRA3.private_subnets}"]
-  ssh_public_keys = ["${openstack_compute_keypair_v2.keypair.public_key}"]
+  network_id      = module.network_GRA3.network_id
+  subnet_ids      = [module.network_GRA3.private_subnets]
+  ssh_public_keys = [openstack_compute_keypair_v2.keypair.public_key]
   region          = "GRA3"
 
   metadata = {
@@ -119,14 +119,14 @@ module "public_cluster_GRA3" {
   name          = "mypublicswarm_workers_gra3"
   count         = 2
   cidr          = "10.4.0.0/16"
-  network_id    = "${module.network_GRA3.network_id}"
-  subnet_ids    = ["${module.network_GRA3.public_subnets}"]
+  network_id    = module.network_GRA3.network_id
+  subnet_ids    = [module.network_GRA3.public_subnets]
   public_facing = true
   region        = "GRA3"
 
   manager_count   = 0
-  etcd_join_nodes = "${module.private_cluster_GRA3.etcd_join_nodes}"
-  ssh_public_keys = ["${openstack_compute_keypair_v2.keypair.public_key}"]
+  etcd_join_nodes = module.private_cluster_GRA3.etcd_join_nodes
+  ssh_public_keys = [openstack_compute_keypair_v2.keypair.public_key]
 
   metadata = {
     Terraform   = "true"
@@ -149,13 +149,13 @@ module "private_cluster_DE1" {
   name       = "myprivateswarm_workers_de1"
   count      = 3
   cidr       = "10.4.0.0/16"
-  network_id = "${module.network_DE1.network_id}"
-  subnet_ids = ["${module.network_DE1.private_subnets}"]
+  network_id = module.network_DE1.network_id
+  subnet_ids = [module.network_DE1.private_subnets]
   region     = "DE1"
 
   manager_count   = 0
-  etcd_join_nodes = "${module.private_cluster_GRA3.etcd_join_nodes}"
-  ssh_public_keys = ["${openstack_compute_keypair_v2.keypair.public_key}"]
+  etcd_join_nodes = module.private_cluster_GRA3.etcd_join_nodes
+  ssh_public_keys = [openstack_compute_keypair_v2.keypair.public_key]
 
   metadata = {
     Terraform   = "true"
