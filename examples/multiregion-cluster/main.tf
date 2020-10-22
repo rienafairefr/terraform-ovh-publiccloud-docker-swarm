@@ -1,8 +1,5 @@
 ## This example requires that you already have attached your openstack project
 ## your OVH Vrack
-terraform {
-  required_version = ">= 0.11.0"
-}
 
 provider "ovh" {
   endpoint = "ovh-eu"

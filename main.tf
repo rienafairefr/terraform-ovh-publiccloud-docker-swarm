@@ -3,10 +3,6 @@ provider "openstack" {
   version = "~> 1.0"
 }
 
-terraform {
-  required_version = ">= 0.9.3"
-}
-
 provider "ignition" {
   version = "~> 1.0"
 }
