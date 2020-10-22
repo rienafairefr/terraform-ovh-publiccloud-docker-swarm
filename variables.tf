@@ -63,7 +63,7 @@ variable "join_token" {
   default     = ""
 }
 
-variable "count" {
+variable "nodes_count" {
   description = "The number of docker swarm node to deploy. Defaults to 3."
   default     = 3
 }
