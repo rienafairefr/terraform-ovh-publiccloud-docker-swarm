@@ -1,10 +1,16 @@
 ## DEPLOY A Docker Swarm Cluster in OVH Public Cloud
-provider "openstack" {
-  version = "~> 1.0"
-}
-
-provider "ignition" {
-  version = "~> 1.0"
+terraform {
+  required_providers {
+    ignition = {
+      source = "terraform-providers/ignition"
+      version = "~> 1.0"
+    }
+    openstack = {
+      source = "terraform-provider-openstack/openstack"
+      version = "~> 1.0"
+    }
+  }
+  required_version = ">= 0.13"
 }
 
 locals {
