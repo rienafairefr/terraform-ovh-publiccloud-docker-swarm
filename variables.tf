@@ -13,7 +13,7 @@ variable "image_id" {
 }
 
 variable "image_names" {
-  type        = "map"
+  type        = map
   description = "The name per region of the docker enabled images. This variable can be overriden by the \"image_id\" variable"
 
   default = {
@@ -38,7 +38,7 @@ variable "flavor_name" {
 }
 
 variable "flavor_names" {
-  type = "map"
+  type = map
 
   description = "A map of flavor names per openstack region that will be used for the docker swarm nodes."
 
@@ -104,7 +104,7 @@ variable "network_id" {
 }
 
 variable "subnet_ids" {
-  type = "list"
+  type = list
 
   description = <<DESC
 The list of subnets ids to deploy docker swarm nodes in.
@@ -116,7 +116,7 @@ DESC
 }
 
 variable "subnets" {
-  type = "list"
+  type = list
 
   description = <<DESC
 The list of subnets CIDR blocks to deploy docker swarm nodes in.
@@ -133,7 +133,7 @@ variable "public_facing" {
 }
 
 variable "ssh_public_keys" {
-  type        = "list"
+  type        = list
   description = "The ssh public keys that can be used to SSH to the instances in this cluster."
   default     = []
 }
@@ -144,14 +144,14 @@ variable "metadata" {
 }
 
 variable "labels" {
-  type        = "list"
+  type        = list
   description = "A list of labels to add to all to docker swarm nodes. Labels may be in the form key=value"
   default     = []
 }
 
 variable "security_group_ids" {
   description = "A list of security group to add the nodes in. Note: if the cluster is `public_facing`, the security groups will only be applied to private ports, not public ports."
-  type        = "list"
+  type        = list
   default     = []
 }
 
