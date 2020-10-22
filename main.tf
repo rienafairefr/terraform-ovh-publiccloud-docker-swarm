@@ -170,7 +170,7 @@ resource "openstack_networking_port_v2" "port_nodes" {
   #  network_id         = element(data.openstack_networking_subnet_v2.subnets.*.network_id, count.index)
   network_id         = var.network_id
   admin_state_up     = "true"
-  security_group_ids = [concat(list(element(openstack_networking_secgroup_v2.sg.*.id, 0)), var.security_group_ids)]
+  security_group_ids = concat(list(element(openstack_networking_secgroup_v2.sg.*.id, 0)), var.security_group_ids)
 
   fixed_ip {
     subnet_id = element(data.openstack_networking_subnet_v2.subnets.*.id, count.index)
@@ -332,12 +332,12 @@ CONTENT
 
 data "ignition_user" "core" {
   name                = "core"
-  ssh_authorized_keys = [var.ssh_public_keys]
+  ssh_authorized_keys = var.ssh_public_keys
 }
 
 data "ignition_config" "swarm" {
   count    = var.nodes_count
-  networkd = [compact(concat(data.ignition_networkd_unit.public.*.id, data.ignition_networkd_unit.private.*.id))]
+  networkd = concat(data.ignition_networkd_unit.public.*.id, data.ignition_networkd_unit.private.*.id)
   users    = [data.ignition_user.core.id]
 
   systemd = [
